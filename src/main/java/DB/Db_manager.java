@@ -3,6 +3,7 @@ package DB;
 import org.mapdb.DB;
 import org.mapdb.DBMaker;
 import org.mapdb.Serializer;
+import org.omg.PortableInterceptor.ORBInitInfoPackage.DuplicateName;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -16,19 +17,31 @@ public class Db_manager {
             .fileMmapEnable()
             .make();
 
-    public static void init(String name){
+    public static void init(String name) {
+        if(db.exists(name)){
+            throw new IllegalArgumentException("hashmap name is duplicate");
+        }
         db.hashMap(name, Serializer.STRING, Serializer.STRING).create();
     }
 
     private static ConcurrentMap<String,String> getMap(String name){
-        return (ConcurrentMap<String,String>)db.hashMap(name).open();
+        if(!db.exists(name)){
+            throw new IllegalArgumentException("hashmap name does not exist");
+        }
+        return (ConcurrentMap<String, String>) db.hashMap(name).open();
     }
 
     public static String get(String hashMapName, String key){
+        if(!getMap(hashMapName).containsKey(key)){
+            throw new IllegalArgumentException("key does not exist");
+        }
         return getMap(hashMapName).get(key);
     }
 
     public static void delete_key(String hashMapName, String key){
+        if(!getMap(hashMapName).containsKey(key)){
+            throw new IllegalArgumentException("key does not exist");
+        }
         getMap(hashMapName).remove(key);
     }
 
