@@ -2,3 +2,4 @@ target/
 .idea/
 gradle/
 gs-rest-service.iml
+*.db
