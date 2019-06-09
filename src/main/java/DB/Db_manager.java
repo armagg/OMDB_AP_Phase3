@@ -4,10 +4,12 @@ import org.mapdb.DB;
 import org.mapdb.DBMaker;
 import org.mapdb.Serializer;
 import org.omg.PortableInterceptor.ORBInitInfoPackage.DuplicateName;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
+import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 
 public class Db_manager {
 
@@ -31,21 +33,27 @@ public class Db_manager {
         return (ConcurrentMap<String, String>) db.hashMap(name).open();
     }
 
-    public static String get(String hashMapName, String key){
+    private static void checkKey(String hashMapName, String key){
         if(!getMap(hashMapName).containsKey(key)){
             throw new IllegalArgumentException("key does not exist");
         }
+    }
+
+    public static String get(String hashMapName, String key){
+        checkKey(hashMapName, key);
         return getMap(hashMapName).get(key);
     }
 
     public static void delete_key(String hashMapName, String key){
-        if(!getMap(hashMapName).containsKey(key)){
-            throw new IllegalArgumentException("key does not exist");
-        }
+        checkKey(hashMapName, key);
         getMap(hashMapName).remove(key);
     }
 
-    public static void put(String hashMapName, String key, String value){
+    public static void put(String hashMapName, String key, String value, RequestMethod requestMethod){
+        if(requestMethod.equals(PUT) ^ !getMap(hashMapName).containsKey(key)){
+            throw new IllegalArgumentException("key does not exist");
+        }
+
         getMap(hashMapName).put(key, value);
     }
 
