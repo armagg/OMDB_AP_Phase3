@@ -14,7 +14,10 @@ import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 @RestController
 public class Controller {
-    private final AtomicLong counter = new AtomicLong();
+    private final static int okCode = 200;
+    private final static int invalidInput = 401;
+    private final static int duplicateInput = 400;
+
 
     @RequestMapping(method = POST, path = "/init_DB")
     public Content initDB(@RequestParam Map<String, String> requestParams) {
@@ -26,15 +29,10 @@ public class Controller {
 
         try {
             DbManager.init(name);
-            return new Content(name + " created", 200);
+            return new Content(name + " created", okCode);
         } catch (IllegalArgumentException ignored) {
-            return new Content("There is a db with this name", 400);
+            return new Content("There is a db with this name", duplicateInput);
         }
-    }
-
-    @RequestMapping(method = POST, path = "/put")
-    public Content put(@RequestParam Map<String, String> requestParams) {
-        return getContent(requestParams, POST, "There is a value with that key!", 400);
     }
 
     @RequestMapping
@@ -42,15 +40,15 @@ public class Controller {
         String name = requestParams.get("name");
         String key = requestParams.get("key");
         if (name == null || key == null){
-            return new Content("Invalid input", 401);
+            return new Content("Invalid input", invalidInput);
         }
         else {
             try {
                 String value = DbManager.get(name, key);
-                return new Content(value, 200);
+                return new Content(value, okCode);
             }
             catch (IllegalArgumentException e){
-                return new Content(e.getMessage(), 401);
+                return new Content(e.getMessage(), invalidInput);
             }
         }
      }
@@ -65,20 +63,25 @@ public class Controller {
         String name = requestParams.get("name");
         String key = requestParams.get("key");
         if (name == null || key == null) {
-            return new Content("Invalid input", 401);
+            return new Content("Invalid input", invalidInput);
         } else {
             try {
                 DbManager.delete_key(name, key);
-                return new Content(key + " from " + name + " deleted", 200);
+                return new Content(key + " from " + name + " deleted", okCode);
             } catch (IllegalArgumentException e) {
-                return new Content("Key or DB unavailable!", 401);
+                return new Content("Key or DB unavailable!", invalidInput);
             }
         }
     }
 
-    @RequestMapping(method = PUT, path = "/update")
+    @RequestMapping(method = PUT, path = "/put")
     public Content update(@RequestParam Map<String, String> requestParams) {
-        return getContent(requestParams, PUT, "Unavailable key or name !", 401);
+        return getContent(requestParams, PUT, "Unavailable key or name !", invalidInput);
+    }
+
+    @RequestMapping(method = POST, path = "/put")
+    public Content put(@RequestParam Map<String, String> requestParams) {
+        return getContent(requestParams, POST, "There is a value with that key!", duplicateInput);
     }
 
     @NotNull
@@ -88,11 +91,11 @@ public class Controller {
         String key = requestParams.get("key");
         String value = requestParams.get("value");
         if (name == null || key == null || value == null) {
-            return new Content("invalid input", 401);
+            return new Content("invalid input", invalidInput);
         } else {
             try {
                 DbManager.put(name, key, value, put);
-                return new Content("Done :)", 200);
+                return new Content("Done :)", okCode);
             } catch (IllegalArgumentException e) {
                 return new Content(errorMessage, errorCode);
             }

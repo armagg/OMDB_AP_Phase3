@@ -15,4 +15,7 @@ public class Content {
         return content;
     }
 
+    public int getHttpCode() {
+        return httpCode;
+    }
 }

@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
 
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
 import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 
 public class DbManager {
@@ -50,7 +51,7 @@ public class DbManager {
     }
 
     public static void put(String hashMapName, String key, String value, RequestMethod requestMethod){
-        if(requestMethod.equals(PUT) ^ !getMap(hashMapName).containsKey(key)){
+        if(requestMethod.equals(POST) ^ !getMap(hashMapName).containsKey(key)){
             throw new IllegalArgumentException("key does not exist");
         }
 
