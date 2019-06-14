@@ -3,15 +3,15 @@ package DB;
 import org.mapdb.DB;
 import org.mapdb.DBMaker;
 import org.mapdb.Serializer;
-import org.omg.PortableInterceptor.ORBInitInfoPackage.DuplicateName;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
+
 import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 
-public class Db_manager {
+public class DbManager {
 
     private static DB db =  DBMaker
             .fileDB("data_base.db")
