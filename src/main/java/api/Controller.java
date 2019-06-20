@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import static org.springframework.web.bind.annotation.RequestMethod.*;
@@ -19,7 +21,6 @@ public class Controller {
 
     @RequestMapping(method = POST, path = "/init_DB")
     public ResponseEntity<String> initDB(@RequestParam Map<String, String> requestParams) {
-
         String name = requestParams.get("name");
         if (name == null) {
             name = "default_name";
@@ -35,7 +36,7 @@ public class Controller {
         }
     }
 
-    @RequestMapping
+    @RequestMapping(method = GET, path = "/get")
     public ResponseEntity<String> get(@RequestParam Map<String, String> requestParams){
         String name = requestParams.get("name");
         String key = requestParams.get("key");
@@ -54,8 +55,20 @@ public class Controller {
      }
 
     @RequestMapping(method = GET, path = "/get_all")
-    public Content getAll(@RequestParam Map<String, String> requestParams) {
-        return null;
+    public ResponseEntity<List> getAll(@RequestParam Map<String, String> requestParams) {
+        String name = requestParams.get("name");
+        if (name == null){
+            return new ResponseEntity<List>(new ArrayList(), HttpStatus.BAD_REQUEST);
+        }
+        else {
+            try {
+                List value = DbManager.getAll(name);
+                return new ResponseEntity<List>(value, HttpStatus.OK);
+            }
+            catch (IllegalArgumentException e){
+                return new ResponseEntity<List>(new ArrayList(), HttpStatus.BAD_REQUEST);
+            }
+        }
     }
 
     @RequestMapping(method = DELETE, path = "/del")

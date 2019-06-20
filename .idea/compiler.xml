@@ -17,7 +17,7 @@
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
-      <module name="OMDB_AP_Phase3" options="-parameters" />
+      <module name="OMDB_AP_Phase3" options="" />
       <module name="gs-rest-service" options="" />
     </option>
   </component>
