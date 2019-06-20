@@ -58,15 +58,15 @@ public class Controller {
     public ResponseEntity<List> getAll(@RequestParam Map<String, String> requestParams) {
         String name = requestParams.get("name");
         if (name == null){
-            return new ResponseEntity<List>(new ArrayList(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new ArrayList(), HttpStatus.BAD_REQUEST);
         }
         else {
             try {
                 List value = DbManager.getAll(name);
-                return new ResponseEntity<List>(value, HttpStatus.OK);
+                return new ResponseEntity<>(value, HttpStatus.OK);
             }
             catch (IllegalArgumentException e){
-                return new ResponseEntity<List>(new ArrayList(), HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(new ArrayList(), HttpStatus.BAD_REQUEST);
             }
         }
     }
