@@ -28,15 +28,18 @@ public class Controller {
 
         try {
             DbManager.init(name);
+            System.out.println( name + " db created");
             return new ResponseEntity<String>(name + " created", HttpStatus.OK);
 
         } catch (IllegalArgumentException ignored) {
+            System.out.println("db create exception!");
             return new ResponseEntity<String>("There is a db with this name", HttpStatus.BAD_REQUEST);
 
         }
     }
 
-    @RequestMapping(method = GET, path = "/get")
+
+    @RequestMapping(method = POST, path = "/get")
     public ResponseEntity<String> get(@RequestParam Map<String, String> requestParams){
         String name = requestParams.get("name");
         String key = requestParams.get("key");
@@ -54,8 +57,25 @@ public class Controller {
         }
      }
 
-    @RequestMapping(method = GET, path = "/get_all")
+    @RequestMapping(method = POST, path = "/get_all_keys")
     public ResponseEntity<List> getAll(@RequestParam Map<String, String> requestParams) {
+        String name = requestParams.get("name");
+        if (name == null){
+            return new ResponseEntity<>(new ArrayList(), HttpStatus.BAD_REQUEST);
+        }
+        else {
+            try {
+                List value = DbManager.getAllKeys(name);
+                return new ResponseEntity<>(value, HttpStatus.OK);
+            }
+            catch (IllegalArgumentException e){
+                return new ResponseEntity<>(new ArrayList(), HttpStatus.BAD_REQUEST);
+            }
+        }
+    }
+
+    @RequestMapping(method = POST, path = "/get_all_values")
+    public ResponseEntity<List> getAllValue(@RequestParam Map<String, String> requestParams) {
         String name = requestParams.get("name");
         if (name == null){
             return new ResponseEntity<>(new ArrayList(), HttpStatus.BAD_REQUEST);
@@ -71,7 +91,8 @@ public class Controller {
         }
     }
 
-    @RequestMapping(method = DELETE, path = "/del")
+
+    @RequestMapping(method = POST, path = "/del_in_DB")
     public ResponseEntity<String> del(@RequestParam Map<String, String> requestParams) {
         String name = requestParams.get("name");
         String key = requestParams.get("key");
@@ -92,7 +113,7 @@ public class Controller {
         return getContent(requestParams, PUT, "Unavailable key or name !", HttpStatus.BAD_REQUEST);
     }
 
-    @RequestMapping(method = POST, path = "/put")
+    @RequestMapping(method = POST , path = "/put")
     public ResponseEntity<String> put(@RequestParam Map<String, String> requestParams) {
         return getContent(requestParams, POST, "There is a value with that key!", HttpStatus.BAD_REQUEST);
     }

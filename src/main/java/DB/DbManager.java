@@ -66,6 +66,15 @@ public class DbManager {
         return result;
     }
 
+    public static ArrayList<String> getAllKeys(String hashMapName){
+        ArrayList<String> result = new ArrayList<>();
+        for (final Map.Entry<String, String> entry : getMap(hashMapName).entrySet()) {
+            result.add(entry.getKey());
+        }
+        return result;
+    }
+
+
     public static void debug_print(DB db){
         for (final Map.Entry<String, Object> entry : db.getAll().entrySet()) {
             final String name = entry.getKey();
