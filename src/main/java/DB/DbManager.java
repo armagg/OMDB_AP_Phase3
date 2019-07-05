@@ -16,6 +16,7 @@ public class DbManager {
 
     private static DB db =  DBMaker
             .fileDB("data_base.db")
+            .allocateStartSize(1024)
             .closeOnJvmShutdown()
             .fileMmapEnable()
             .make();

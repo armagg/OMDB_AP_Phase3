@@ -92,7 +92,7 @@ public class Controller {
     }
 
 
-    @RequestMapping(method = POST, path = "/del_in_DB")
+    @RequestMapping(method = POST, path = "/del_from_DB")
     public ResponseEntity<String> del(@RequestParam Map<String, String> requestParams) {
         String name = requestParams.get("name");
         String key = requestParams.get("key");
